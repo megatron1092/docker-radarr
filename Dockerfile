@@ -32,7 +32,6 @@ RUN \
 	/app/radarr/bin --strip-components=1 && \
  echo "UpdateMethod=docker\nBranch=${RADARR_BRANCH}\nPackageVersion=${VERSION}\nPackageAuthor=megatron1092" > /app/radarr/package_info && \
  echo "**** cleanup ****" && \
- chmod -R 755 /app/radarr/bin && \
  rm -rf \
 	/app/radarr/bin/Radarr.Update \
 	/tmp/* \
