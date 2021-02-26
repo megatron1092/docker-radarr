@@ -2,10 +2,10 @@ FROM ghcr.io/linuxserver/baseimage-ubuntu:focal
 
 # set version label
 ARG BUILD_DATE
-ARG VERSION
-ARG RADARR_RELEASE
-LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
-LABEL maintainer="thelamer"
+ARG VERSION="0.0.1"
+ARG RADARR_RELEASE="0.0.1"
+LABEL build_version="megatron1092 version:- ${VERSION} Build-date:- ${BUILD_DATE}"
+LABEL maintainer="megatron1092"
 
 # environment settings
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -21,19 +21,18 @@ RUN \
 	libmediainfo0v5 \
 	sqlite3 && \
  echo "**** install radarr ****" && \
+ radarr_url=$(curl -s https://api.github.com/repos/megatron1092/Radarr/releases/tags/0.0.1 \
+|jq -r '.assets[].browser_download_url') && \
  mkdir -p /app/radarr/bin && \
- if [ -z ${RADARR_RELEASE+x} ]; then \
-	RADARR_RELEASE=$(curl -sL "https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/changes?os=linux" \
-	| jq -r '.[0].version'); \
- fi && \
  curl -o \
 	/tmp/radarr.tar.gz -L \
-	"https://radarr.servarr.com/v1/update/${RADARR_BRANCH}/updatefile?version=${RADARR_RELEASE}&os=linux&runtime=netcore&arch=x64" && \
+	"${radarr_url}" && \
  tar ixzf \
 	/tmp/radarr.tar.gz -C \
 	/app/radarr/bin --strip-components=1 && \
- echo "UpdateMethod=docker\nBranch=${RADARR_BRANCH}\nPackageVersion=${VERSION}\nPackageAuthor=linuxserver.io" > /app/radarr/package_info && \
+ echo "UpdateMethod=docker\nBranch=${RADARR_BRANCH}\nPackageVersion=${VERSION}\nPackageAuthor=megatron1092" > /app/radarr/package_info && \
  echo "**** cleanup ****" && \
+ chmod -R 755 /app/radarr/bin && \
  rm -rf \
 	/app/radarr/bin/Radarr.Update \
 	/tmp/* \
